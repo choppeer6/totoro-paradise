@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(ts|js|json\\)$\")",
+      "Bash(xargs wc:*)",
+      "WebFetch(domain:www.nuaaguide.shop)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.cnblogs.com)"
+    ]
+  }
+}

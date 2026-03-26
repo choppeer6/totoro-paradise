@@ -128,9 +128,42 @@ const TotoroApiWrapper = {
   },
 
   async sunRunExercises(req: SunRunExercisesRequest): Promise<SunRunExercisesResponse> {
+    // 详细调试日志：打印每次调用的 SunRunExercisesRequest（明文）和加密后的 body 摘要。
+    // 说明：明文里包含 token/学号等敏感信息；目前做了轻度脱敏展示，方便你在不泄露完整凭据的前提下排查字段。
+    // 本地/开发环境为了排查字段，允许不脱敏；生产环境仍保持脱敏以避免日志泄露敏感信息。
+    // 由于该 wrapper 会在浏览器端运行，这里用运行时域名判断是否“生产”。
+    // - app.xtotoro.com：保持脱敏
+    // - 其它域名（本地/测试环境）：不脱敏
+    const shouldMask =
+      typeof window !== 'undefined' ? window.location.hostname === 'app.xtotoro.com' : true;
+    const mask = (s: string) => {
+      if (!shouldMask) return s;
+      if (!s) return s;
+      return `${s.slice(0, 6)}...${s.slice(-4)}`;
+    };
+    const plaintextForLog = {
+      ...req,
+      token: mask(req.token),
+      stuNumber: mask(req.stuNumber),
+      taskId: mask(req.taskId),
+      routeId: mask(req.routeId),
+    };
+
+    /* eslint-disable no-console */
+    console.log('[TotoroApiWrapper.sunRunExercises] ---- SunRunExercisesRequest (plaintext) ----');
+    console.log(plaintextForLog);
+    const encryptedBody = encryptRequestContent(req);
+    console.log('[TotoroApiWrapper.sunRunExercises] encrypted body(base64) len:', encryptedBody.length);
+    console.log('[TotoroApiWrapper.sunRunExercises] encrypted body(base64) head:', encryptedBody.slice(0, 160));
+    console.log(
+      '[TotoroApiWrapper.sunRunExercises] encrypted body(base64) tail:',
+      encryptedBody.slice(-160),
+    );
+    /* eslint-enable no-console */
+
     return this.client
       .post('platform/recrecord/sunRunExercises', {
-        body: encryptRequestContent(req),
+        body: encryptedBody,
       })
       .json();
   },

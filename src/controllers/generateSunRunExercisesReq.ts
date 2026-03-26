@@ -20,6 +20,7 @@ const generateRunReq = async ({
   phoneNumber,
   minTime,
   maxTime,
+  targetDate,
 }: {
   distance: string;
   routeId: string;
@@ -30,6 +31,7 @@ const generateRunReq = async ({
   phoneNumber: string;
   minTime: string;
   maxTime: string;
+  targetDate?: Date;
 }) => {
   const { minSecond, maxSecond } = {
     minSecond: Number(minTime) * 60,
@@ -40,7 +42,14 @@ const generateRunReq = async ({
   const waitSecond = Math.floor(
     normalRandom(minSecond + maxSecond / 2, (maxSecond - avgSecond) / 3),
   );
-  const startTime = new Date();
+  let startTime: Date;
+  if (targetDate) {
+    const hour = 6 + Math.floor(Math.random() * 14);
+    const minute = Math.floor(Math.random() * 60);
+    startTime = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), hour, minute);
+  } else {
+    startTime = new Date();
+  }
   const endTime = new Date(Number(startTime) + waitSecond * 1000);
   const distanceNum = Number(distance);
   const avgSpeed = (distanceNum / (waitSecond / 3600)).toFixed(2);
