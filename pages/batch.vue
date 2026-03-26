@@ -10,6 +10,8 @@ const selectedRoute = ref('');
 const startDate = ref('');
 const endDate = ref('');
 const batchRunning = ref(false);
+// 批量功能目前仅做前端展示，暂不开放实际提交
+const batchEnabled = false;
 
 interface DateStatus {
   date: string;
@@ -20,12 +22,18 @@ interface DateStatus {
 const dateStatuses = ref<DateStatus[]>([]);
 
 const canStart = computed(
-  () => selectedRoute.value && startDate.value && endDate.value && !batchRunning.value,
+  () =>
+    batchEnabled &&
+    selectedRoute.value &&
+    startDate.value &&
+    endDate.value &&
+    !batchRunning.value,
 );
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const handleBatchRun = async () => {
+  if (!batchEnabled) return;
   const dates = eachDayOfInterval({
     start: new Date(startDate.value),
     end: new Date(endDate.value),
@@ -141,36 +149,65 @@ function handleBeforeUnload(e: BeforeUnloadEvent) {
 </script>
 
 <template>
-  <p class="text-h6 mb-4">批量打卡</p>
+  <VCard class="mb-6">
+    <VCardTitle class="text-h6">
+      批量打卡
+    </VCardTitle>
+    <VCardText>
+      <VAlert v-if="!batchEnabled" type="warning" variant="tonal" class="mb-4">
+        批量提交暂不可用
+      </VAlert>
 
-  <VSelect
-    v-model="selectedRoute"
-    :items="sunRunPaper.runPointList"
-    item-title="pointName"
-    item-value="pointId"
-    variant="underlined"
-    label="路线"
-    class="mb-2"
-  />
+      <VSelect
+        v-model="selectedRoute"
+        :items="sunRunPaper.runPointList"
+        item-title="pointName"
+        item-value="pointId"
+        variant="underlined"
+        label="路线"
+        class="mb-2"
+        :disabled="!batchEnabled"
+      />
 
-  <div class="d-flex gap-4 mb-4">
-    <VTextField v-model="startDate" type="date" label="开始日期" variant="underlined" />
-    <VTextField v-model="endDate" type="date" label="结束日期" variant="underlined" />
-  </div>
+      <div class="d-flex mb-4 gap-4">
+        <VTextField
+          v-model="startDate"
+          type="date"
+          label="开始日期"
+          variant="underlined"
+          :disabled="!batchEnabled"
+        />
+        <VTextField
+          v-model="endDate"
+          type="date"
+          label="结束日期"
+          variant="underlined"
+          :disabled="!batchEnabled"
+        />
+      </div>
 
-  <VBtn :disabled="!canStart" :loading="batchRunning" color="primary" @click="handleBatchRun">
-    开始批量打卡
-  </VBtn>
+      <VBtn :disabled="!canStart" :loading="batchRunning" color="primary" @click="handleBatchRun">
+        开始批量打卡
+      </VBtn>
+    </VCardText>
+  </VCard>
 
-  <VList v-if="dateStatuses.length" class="mt-4">
-    <VListItem v-for="item in dateStatuses" :key="item.date">
-      <template #prepend>
-        <VIcon :icon="statusIcon(item.status)" :color="statusColor(item.status)" />
-      </template>
-      <VListItemTitle>{{ item.date }}</VListItemTitle>
-      <VListItemSubtitle v-if="item.message" class="text-red">
-        {{ item.message }}
-      </VListItemSubtitle>
-    </VListItem>
-  </VList>
+  <VCard v-if="dateStatuses.length">
+    <VCardTitle class="text-h6">
+      执行结果
+    </VCardTitle>
+    <VCardText>
+      <VList>
+        <VListItem v-for="item in dateStatuses" :key="item.date">
+          <template #prepend>
+            <VIcon :icon="statusIcon(item.status)" :color="statusColor(item.status)" />
+          </template>
+          <VListItemTitle>{{ item.date }}</VListItemTitle>
+          <VListItemSubtitle v-if="item.message" class="text-red">
+            {{ item.message }}
+          </VListItemSubtitle>
+        </VListItem>
+      </VList>
+    </VCardText>
+  </VCard>
 </template>
