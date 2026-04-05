@@ -1,5 +1,3 @@
-import TotoroApiWrapper from '~~/src/wrappers/TotoroApiWrapper';
-
 export default defineEventHandler(async (e) => {
   let code: string;
   try {
