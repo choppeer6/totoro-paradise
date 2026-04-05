@@ -8,6 +8,8 @@
   "scripts": {
     "start": "node .output/server/index.mjs",
     "build": "nuxt build",
+    "build:vercel": "NUXT_BASE_URL=/ nuxt build",
+    "build:embed": "NUXT_BASE_URL=/totoro/ nuxt generate",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
