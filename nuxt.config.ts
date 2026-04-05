@@ -4,9 +4,12 @@ import inject from '@rollup/plugin-inject';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   pages: true,
-  ssr: false,
+  ssr: true,
   app: {
     baseURL: '/',
+  },
+  nitro: {
+    preset: 'vercel',
   },
   routeRules: {
     '/api/**': { proxy: 'https://app.xtotoro.com/app/api/**' },
