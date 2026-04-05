@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     baseURL: '/',
   },
   routeRules: {
-    '/**': { proxy: 'https://app.xtotoro.com/app/**' },
+    '/api/**': { proxy: 'https://app.xtotoro.com/app/api/**' },
   },
   vite: {
     build: { commonjsOptions: { transformMixedEsModules: true } },
