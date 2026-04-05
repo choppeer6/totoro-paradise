@@ -50,28 +50,25 @@ const handleRun = async () => {
     return;
   }
 
-  const delay = Math.max(0, needTime.value);
-  setTimeout(async () => {
-    try {
-      const res = await TotoroApiWrapper.sunRunExercises(req);
-      const runRoute = generateRoute(sunRunPaper.value.mileage, target.value);
-      await TotoroApiWrapper.sunRunExercisesDetail({
-        pointList: runRoute.mockRoute,
-        scantronId: res.scantronId,
-        breq: {
-          campusId: session.value.campusId,
-          schoolId: session.value.schoolId,
-          stuNumber: session.value.stuNumber,
-          token: session.value.token,
-        },
-      });
-    } catch (e: any) {
-      needTime.value = 0; // 避免页面误认为“跑步完成”
-      runError.value = e?.message || '提交跑步数据失败';
-    } finally {
-      running.value = false;
-    }
-  }, delay);
+  // 立即提交跑步数据，无需等待
+  try {
+    const res = await TotoroApiWrapper.sunRunExercises(req);
+    const runRoute = generateRoute(sunRunPaper.value.mileage, target.value);
+    await TotoroApiWrapper.sunRunExercisesDetail({
+      pointList: runRoute.mockRoute,
+      scantronId: res.scantronId,
+      breq: {
+        campusId: session.value.campusId,
+        schoolId: session.value.schoolId,
+        stuNumber: session.value.stuNumber,
+        token: session.value.token,
+      },
+    });
+  } catch (e: any) {
+    runError.value = e?.message || '提交跑步数据失败';
+  } finally {
+    running.value = false;
+  }
 };
 onMounted(() => {
   window.addEventListener('beforeunload', handleBeforeUnload);
