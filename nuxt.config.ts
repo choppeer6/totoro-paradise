@@ -11,9 +11,10 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
   },
-  routeRules: {
-    '/api/**': { proxy: 'https://app.xtotoro.com/app/api/**' },
-  },
+  // routeRules: {
+  //   如需代理外部 API 请单独配置
+  //   '/api/external/**': { proxy: 'https://target.com/api/**' },
+  // },
   vite: {
     build: { commonjsOptions: { transformMixedEsModules: true } },
     resolve: { alias: { buffer: 'buffer' } },
