@@ -7,7 +7,9 @@ useHead({
 })
 </script>
 <script lang="ts">
-window.global = window;
+if (typeof window !== 'undefined') {
+  window.global = window;
+}
 </script>
 <template>
   <VApp>
