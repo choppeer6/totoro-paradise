@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node .output/server/index.mjs",
     "build": "nuxt build",
-    "build:vercel": "NUXT_BASE_URL=/ nuxt build",
+    "vercel-build": "NUXT_BASE_URL=/ nuxt generate",
     "build:embed": "NUXT_BASE_URL=/totoro/ nuxt generate",
     "dev": "nuxt dev",
     "generate": "nuxt generate",

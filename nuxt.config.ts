@@ -2,15 +2,15 @@ import vuetify from 'vite-plugin-vuetify';
 import inject from '@rollup/plugin-inject';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const baseURL = process.env.NUXT_BASE_URL || '/';
-
 export default defineNuxtConfig({
   pages: true,
   ssr: false,
   app: {
-    baseURL,
+    baseURL: '/',
   },
-  routeRules: { [`${baseURL === '/' ? '' : baseURL}/**`]: { proxy: 'https://app.xtotoro.com/app/**' } },
+  routeRules: {
+    '/**': { proxy: 'https://app.xtotoro.com/app/**' },
+  },
   vite: {
     build: { commonjsOptions: { transformMixedEsModules: true } },
     resolve: { alias: { buffer: 'buffer' } },
