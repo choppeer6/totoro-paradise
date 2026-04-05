@@ -70,9 +70,7 @@ const handleBatchRun = async () => {
         token: session.value.token,
       });
 
-      // 短暂延迟模拟间隔，不需要等真实跑步时长
-      await sleep(2000 + Math.random() * 3000);
-
+      // 立即提交跑步数据
       const res = await TotoroApiWrapper.sunRunExercises(req);
       const runRoute = generateRoute(sunRunPaper.value.mileage, target);
 
